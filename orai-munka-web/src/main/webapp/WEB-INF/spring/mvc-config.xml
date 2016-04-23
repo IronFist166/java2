@@ -12,6 +12,5 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	<contex:component-scan base-package="hu.sol.mik.book" />
-	<contex:component-scan base-package="hu.sol.mik.application" />
+	<contex:component-scan base-package="hu.sol.mik" />
 </beans>	
