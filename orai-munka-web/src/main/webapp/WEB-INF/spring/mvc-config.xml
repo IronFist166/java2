@@ -13,4 +13,5 @@
 	</bean>
 	
 	<contex:component-scan base-package="hu.sol.mik.book" />
+	<contex:component-scan base-package="hu.sol.mik.application" />
 </beans>	
