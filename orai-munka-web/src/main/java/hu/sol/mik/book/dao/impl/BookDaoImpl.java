@@ -16,7 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @WebService
-@Repository("bookDaoImplQ")
+@Repository("elsoDao")
 public class BookDaoImpl implements BookDao {
 
 	@Override
@@ -75,6 +75,15 @@ public class BookDaoImpl implements BookDao {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.update(book);
+		transaction.commit();
+		session.close();
+	}
+
+	@Override
+	public void delete(Book book) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		session.delete(book);
 		transaction.commit();
 		session.close();
 	}
