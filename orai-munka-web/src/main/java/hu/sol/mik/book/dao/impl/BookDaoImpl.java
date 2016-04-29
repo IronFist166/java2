@@ -16,7 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @WebService
-@Repository("elsoDao")
+@Repository("bookDaoImplQ")
 public class BookDaoImpl implements BookDao {
 
 	@Override
