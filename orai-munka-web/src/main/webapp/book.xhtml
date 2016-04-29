@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML xmlns="http://www.w3c.org/1999/xhtml"
+<html xmlns="http://www.w3c.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://java.sun.com/jsf/core">
@@ -7,11 +7,8 @@
 <h:body>
 	<h:form id="from">
 		<h:outputText value="Könyvek listája!" />
-		<p:dataTable var="book" value="#{bookManagedBean.bookList}"
-			rowKey="#{book.id}" selection="#{bookManagedBean.selectedBooks}">
-			<p:column selectionMode="multiple">
-
-			</p:column>
+		<p:dataTable var="book" value="#{bookManagedBean.bookList}" rowKey="#{book.id}" selection="#{bookManagedBean.selectedBooks}">
+			<p:column selectionMode="multiple" style="width:2em;text-align:center;" />
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="Szerző" />
@@ -45,30 +42,43 @@
 		</p:dataTable>
 		<p:panel>
 			<p:panelGrid columns="2">
-				<h:commandButton value="Új könyv felvitele"
-					actionListener="#{bookManagedBean.newBook}">
-				</h:commandButton>
-				<h:commandButton value="Kijelöltek törlése"
-					actionListener="#{bookManagedBean.deleteSelectedBooks}">
-				</h:commandButton>
+				<h:commandButton value="Új könyv felvitele" actionListener="#{bookManagedBean.newBook}" />
+				<h:commandButton value="Kijelöltek törlése" actionListener="#{bookManagedBean.deleteSelectedBooks}" />
 			</p:panelGrid>
 		</p:panel>
+	</h:form>
+	<h:form>
 		<p:panel rendered="#{not empty bookManagedBean.editedBook}">
-			<p:panelGrid columns="2">
+			<p:messages autoUpdate="true" />
+			<p:panelGrid columns="3" layout="grid" style="width:50%;">
 				<f:facet name="header">Könyv adatai</f:facet>
-				<h:outputText value="Szerző"></h:outputText>
-				<h:inputText value="#{bookManagedBean.editedBook.author}"></h:inputText>
-				<h:outputText value="Cím"></h:outputText>
-				<h:inputText value="#{bookManagedBean.editedBook.title}"></h:inputText>
-				<h:outputText value="Leírás"></h:outputText>
-				<h:inputText value="#{bookManagedBean.editedBook.description}"></h:inputText>
-				<h:outputText value="Kiadás"></h:outputText>
-				<h:inputText value="#{bookManagedBean.editedBook.pubYear}"></h:inputText>
+				
+				<h:outputLabel for="author" value="Szerző" />
+				<h:inputText id="author" value="#{bookManagedBean.editedBook.author}">
+					<f:validateLength minimum="3" />
+				</h:inputText>
+				<p:message for="author" />
+				
+				<h:outputLabel for="title" value="Cím" />
+				<h:inputText id="title" value="#{bookManagedBean.editedBook.title}">
+					<f:validateLength minimum="3" />
+				</h:inputText>
+				<p:message for="title" />
+				
+				<h:outputLabel for="description" value="Leírás" />
+				<h:inputText id="description" value="#{bookManagedBean.editedBook.description}">
+					<f:validateLength minimum="3" />
+				</h:inputText>
+				<p:message for="description" />
+				
+				<h:outputLabel for="pubYear" value="Kiadás" />
+				<h:inputText id="pubYear" value="#{bookManagedBean.editedBook.pubYear}">
+					<f:validateLongRange minimum="1" maximum="3000" />
+				</h:inputText>
+	            <p:message for="pubYear" />
 			</p:panelGrid>
-			<h:commandButton value="Mentés"
-				actionListener="#{bookManagedBean.saveBook}">
-			</h:commandButton>
+			<h:commandButton value="Mentés" actionListener="#{bookManagedBean.saveBook}" />
 		</p:panel>
 	</h:form>
 </h:body>
-</HTML>
+</html>
