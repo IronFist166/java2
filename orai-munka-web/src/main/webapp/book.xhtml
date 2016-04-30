@@ -3,11 +3,17 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://java.sun.com/jsf/core">
-<h:head></h:head>
+<h:head>
+	<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+</h:head>
 <h:body>
-	<h:form id="from">
+	<h:form id="form1">
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			<h:outputText value="Kérem várjon" />
+		</p:dialog>
+		
 		<h:outputText value="Könyvek listája!" />
-		<p:dataTable var="book" value="#{bookManagedBean.bookList}" rowKey="#{book.id}" selection="#{bookManagedBean.selectedBooks}">
+		<p:dataTable id="dataTable" var="book" value="#{bookManagedBean.bookList}" rowKey="#{book.id}" selection="#{bookManagedBean.selectedBooks}">
 			<p:column selectionMode="multiple" style="width:2em;text-align:center;" />
 			<p:column>
 				<f:facet name="header">
@@ -34,51 +40,46 @@
 				<h:outputText value="#{book.pubYear}" />
 			</p:column>
 			<p:column>
-				<h:commandButton value="Szerkeszt">
-					<f:setPropertyActionListener value="#{book}"
-						target="#{bookManagedBean.editedBook}"></f:setPropertyActionListener>
-				</h:commandButton>
+				<p:commandButton value="Szerkeszt" oncomplete="PF('editFormDialog').show()" update=":form2:editForm">
+					<f:setPropertyActionListener value="#{book}" target="#{bookManagedBean.editedBook}" />
+				</p:commandButton>
 			</p:column>
 		</p:dataTable>
 		<p:panel>
 			<p:panelGrid columns="2">
-				<h:commandButton value="Új könyv felvitele" actionListener="#{bookManagedBean.newBook}" />
-				<h:commandButton value="Kijelöltek törlése" actionListener="#{bookManagedBean.deleteSelectedBooks}" />
+				<p:commandButton value="Új könyv felvitele" actionListener="#{bookManagedBean.newBook}" oncomplete="PF('editFormDialog').show()" update=":form2:editForm" />
+				<p:commandButton value="Kijelöltek törlése" actionListener="#{bookManagedBean.deleteSelectedBooks}" update="dataTable" />
 			</p:panelGrid>
 		</p:panel>
 	</h:form>
-	<h:form>
-		<p:panel rendered="#{not empty bookManagedBean.editedBook}">
-			<p:messages autoUpdate="true" />
-			<p:panelGrid columns="3" layout="grid" style="width:50%;">
-				<f:facet name="header">Könyv adatai</f:facet>
-				
-				<h:outputLabel for="author" value="Szerző" />
-				<h:inputText id="author" value="#{bookManagedBean.editedBook.author}">
-					<f:validateLength minimum="3" />
-				</h:inputText>
-				<p:message for="author" />
-				
-				<h:outputLabel for="title" value="Cím" />
-				<h:inputText id="title" value="#{bookManagedBean.editedBook.title}">
-					<f:validateLength minimum="3" />
-				</h:inputText>
-				<p:message for="title" />
-				
-				<h:outputLabel for="description" value="Leírás" />
-				<h:inputText id="description" value="#{bookManagedBean.editedBook.description}">
-					<f:validateLength minimum="3" />
-				</h:inputText>
-				<p:message for="description" />
-				
-				<h:outputLabel for="pubYear" value="Kiadás" />
-				<h:inputText id="pubYear" value="#{bookManagedBean.editedBook.pubYear}">
-					<f:validateLongRange minimum="1" maximum="3000" />
-				</h:inputText>
-	            <p:message for="pubYear" />
-			</p:panelGrid>
-			<h:commandButton value="Mentés" actionListener="#{bookManagedBean.saveBook}" />
-		</p:panel>
-	</h:form>
+	<p:dialog id="editFormDialog" widgetVar="editFormDialog" modal="true" width="1000">
+		<h:form id="form2">
+			<p:panel id="editForm" widgetVar="editForm">
+				<p:messages autoUpdate="true" />
+				<p:panelGrid columns="3" layout="grid">
+					<f:facet name="header">Könyv adatai</f:facet>
+					
+					<h:outputLabel for="author" value="Szerző" />
+					<h:inputText id="author" value="#{bookManagedBean.editedBook.author}" required="true" />
+					<p:message for="author" />
+					
+					<h:outputLabel for="title" value="Cím" />
+					<h:inputText id="title" value="#{bookManagedBean.editedBook.title}" required="true" />
+					<p:message for="title" />
+					
+					<h:outputLabel for="description" value="Leírás" />
+					<h:inputText id="description" value="#{bookManagedBean.editedBook.description}" required="true" />
+					<p:message for="description" />
+					
+					<h:outputLabel for="pubYear" value="Kiadás" />
+					<h:inputText id="pubYear" value="#{bookManagedBean.editedBook.pubYear}">
+						<f:validateLongRange minimum="1" maximum="3000" />
+					</h:inputText>
+		            <p:message for="pubYear" />
+				</p:panelGrid>
+				<p:commandButton value="Mentés" actionListener="#{bookManagedBean.saveBook}" oncomplete="if(args &amp;&amp; !args.validationFailed){PF('editFormDialog').hide();}" update=":form1:dataTable" />
+			</p:panel>
+		</h:form>
+	</p:dialog>
 </h:body>
 </html>
