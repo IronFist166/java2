@@ -52,7 +52,6 @@
 			</p:panelGrid>
 		</p:panel>
 	</h:form>
-<!-- 	<p:dialog id="editFormDialog" widgetVar="editFormDialog" modal="true" width="800"> -->
 		<p:dialog id="editFormDialog" widgetVar="editFormDialog" modal="true" width="1000" visible="#{facesContext.validationFailed}">
 		<h:form id="form2">
 			<p:panel id="editForm" widgetVar="editForm">
@@ -78,7 +77,6 @@
 					</h:inputText>
 		            <p:message for="pubYear" />
 				</p:panelGrid>
-<!-- 				<p:commandButton value="Mentés" actionListener="#{bookManagedBean.saveBook}" oncomplete="if(args &amp;&amp; !args.validationFailed){PF('editFormDialog').hide();}" update=":form1:dataTable" /> -->
 				<p:commandButton value="Mentés" actionListener="#{bookManagedBean.saveBook}" update="@all" />
 			</p:panel>
 		</h:form>
