@@ -49,6 +49,32 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>Vaadin</servlet-name>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+
+		<init-param>
+			<param-name>UI</param-name>
+			<param-value>hu.sol.mik.book.vaadin.BookUI</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>widgetset</param-name>
+			<param-value>hu.sol.mik.book.vaadin.BookWidgetSet</param-value>
+		</init-param>
+
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Vaadin</servlet-name>
+		<url-pattern>/vaadin/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Vaadin</servlet-name>
+		<url-pattern>/VAADIN/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>helloServlet</servlet-name>
 		<servlet-class>hu.sol.mik.hw.test.servlet.HelloServlet</servlet-class>
 	</servlet>
