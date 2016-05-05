@@ -12,6 +12,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -159,6 +160,13 @@ public class BookUI extends UI {
 				return button;
 			}
 		});
+		
+		table.setColumnHeader("title", "Cím");
+		table.setColumnHeader("description", "Leírás");
+		table.setColumnHeader("author", "Szerző");
+		table.setColumnHeader("pubYear", "Megjelenés éve");
+		table.setColumnHeader("editBook", "Szerkesztés");
+		
 		return table;
 	}
 }
