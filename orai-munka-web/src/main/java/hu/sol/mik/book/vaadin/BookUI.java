@@ -4,6 +4,14 @@ import hu.sol.mik.book.bean.Book;
 import hu.sol.mik.book.dao.BookDao;
 import hu.sol.mik.book.dao.impl.BookDaoImpl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanContainer;
@@ -29,6 +37,7 @@ public class BookUI extends UI {
 	private BeanContainer<Long, Book> bookDataSource;
 	private BookDao bookDao;
 	protected Window editBookWindow;
+	protected Set<Book> selectedBooks;
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -47,10 +56,12 @@ public class BookUI extends UI {
 
 	private Component createFunctionLayout() {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
+		Button newBookButton              = new Button("Új könyv felvitel");
+		Button deleteSelectedBooksButton  = new Button("Kiválasztottak törlése");
+		
 		horizontalLayout.setSpacing(true);
 		horizontalLayout.setMargin(true);
-
-		Button newBookButton = new Button("Új könyv felvitel");
+		
 		newBookButton.addClickListener(new ClickListener() {
 
 			@Override
@@ -60,12 +71,24 @@ public class BookUI extends UI {
 			}
 
 		});
-
+		
+		deleteSelectedBooksButton.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Iterator<Book> iterator = selectedBooks.iterator();
+				while(iterator.hasNext()) {
+					bookDao.delete(bookDataSource.getItem(iterator.next()).getBean());
+				}
+				
+				refreshTable();
+				Notification.show("Sikeres törlés");
+			}
+		});
+		
 		horizontalLayout.addComponent(newBookButton);
-
-		Button deleteSelectedBooksButton = new Button("Kiválasztottak törlése");
-
 		horizontalLayout.addComponent(deleteSelectedBooksButton);
+		
 		return horizontalLayout;
 	}
 
@@ -117,37 +140,36 @@ public class BookUI extends UI {
 
 	private Component createBookEditForm(BeanFieldGroup<Book> bookBinder) {
 		FormLayout formLayout = new FormLayout();
-		TextField titleField = bookBinder.buildAndBind("Cím", "title",
-				TextField.class);
+		TextField titleField = bookBinder.buildAndBind("Cím", "title", TextField.class);
+		TextField descField = bookBinder.buildAndBind("Leírás", "description", TextField.class);
+		TextField authorField = bookBinder.buildAndBind("Szerző", "author", TextField.class);
+		TextField pubYearField = bookBinder.buildAndBind("Publikáció", "pubYear", TextField.class);
+		
 		titleField.setNullRepresentation("");
-		formLayout.addComponent(titleField);
-		TextField descField = bookBinder.buildAndBind("Leírás", "description",
-				TextField.class);
 		descField.setNullRepresentation("");
-		formLayout.addComponent(descField);
-		TextField authorField = bookBinder.buildAndBind("Szerző", "author",
-				TextField.class);
 		authorField.setNullRepresentation("");
+		
+		formLayout.addComponent(titleField);
+		formLayout.addComponent(descField);
 		formLayout.addComponent(authorField);
-		TextField pubYearField = bookBinder.buildAndBind("Publikáció",
-				"pubYear", TextField.class);
 		formLayout.addComponent(pubYearField);
+		
 		return formLayout;
 	}
 
 	private Component createBookTable() {
-		Table table = new Table("Könyvek listája");
+		final Table table = new Table("Könyvek listája");
 		table.setSizeFull();
 		bookDataSource = new BeanContainer<Long, Book>(Book.class);
 		bookDataSource.setBeanIdProperty("id");
 		bookDataSource.addAll(bookDao.listAll());
 		table.setContainerDataSource(bookDataSource);
+		
 		table.setVisibleColumns("title", "description", "author", "pubYear");
 		table.addGeneratedColumn("editBook", new ColumnGenerator() {
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId,
-					Object columnId) {
+			public Object generateCell(final Table source, final Object itemId, Object columnId) {
 				Button button = new Button("Szerkeszt");
 				button.addClickListener(new ClickListener() {
 
@@ -166,6 +188,16 @@ public class BookUI extends UI {
 		table.setColumnHeader("author", "Szerző");
 		table.setColumnHeader("pubYear", "Megjelenés éve");
 		table.setColumnHeader("editBook", "Szerkesztés");
+		
+		table.setSelectable(true);
+		table.setMultiSelect(true);
+		table.setNullSelectionAllowed(true);
+		table.addValueChangeListener(new ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				selectedBooks = (Set<Book>)table.getValue();
+			}
+		});
 		
 		return table;
 	}
